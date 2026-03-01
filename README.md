@@ -224,7 +224,7 @@ $|a_{ii}|>\sum_{j \neq i}|a_{ij}|$ for any $i$.
 To complete this task, one should implement the function that computes the solution for the system of linear equations using Jacobi method:
 ```cpp
 std::vector<float> JacobiAccONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device);
 ```
 One should implement both stop methods at the same time. Use $N=1024$ as maximum iterations count and $accuracy$ argument as $Eps$. computations have to be stopped when $|x^{(k+1)}-x^{(k)}|<accuracy$ first, and if it's not happening, when after 1024 iterations.
@@ -244,7 +244,7 @@ Two files are expected to be uploaded:
 #define ITERATIONS 1024
 
 std::vector<float> JacobiAccONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device);
 
 #endif  // __ACC_JACOBI_ONEAPI_H
@@ -254,7 +254,7 @@ std::vector<float> JacobiAccONEAPI(
 #include "acc_jacobi_oneapi.h"
 
 std::vector<float> JacobiAccONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device) {
     // Place your implementation here
 }
@@ -276,7 +276,7 @@ Two files are expected to be uploaded:
 #define ITERATIONS 1024
 
 std::vector<float> JacobiDevONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device);
 
 #endif  // __DEV_JACOBI_ONEAPI_H
@@ -286,7 +286,7 @@ std::vector<float> JacobiDevONEAPI(
 #include "dev_jacobi_oneapi.h"
 
 std::vector<float> JacobiDevONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device) {
     // Place your implementation here
 }
@@ -308,7 +308,7 @@ Two files are expected to be uploaded:
 #define ITERATIONS 1024
 
 std::vector<float> JacobiSharedONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device);
 
 #endif  // __SHARED_JACOBI_ONEAPI_H
@@ -318,7 +318,7 @@ std::vector<float> JacobiSharedONEAPI(
 #include "shared_jacobi_oneapi.h"
 
 std::vector<float> JacobiSharedONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device) {
     // Place your implementation here
 }
@@ -353,7 +353,7 @@ Two files are expected to be uploaded:
 #include <sycl/sycl.hpp>
 
 std::vector<float> GemmBlockONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         size_t size, sycl::device device);
 
 #endif  // __BLOCK_GEMM_ONEAPI_H
@@ -363,7 +363,7 @@ std::vector<float> GemmBlockONEAPI(
 #include "block_gemm_oneapi.h"
 
 std::vector<float> GemmBlockONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         size_t size, sycl::device device) {
     // Place your implementation here
 }
@@ -389,7 +389,7 @@ Two files are expected to be uploaded:
 #include <sycl/sycl.hpp>
 
 std::vector<float> GemmMklONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         size_t size, sycl::device device);
 
 #endif  // __MKL_GEMM_ONEAPI_H
@@ -399,7 +399,7 @@ std::vector<float> GemmMklONEAPI(
 #include "mkl_gemm_oneapi.h"
 
 std::vector<float> GemmMklONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         size_t size, sycl::device device) {
     // Place your implementation here
 }
@@ -457,8 +457,8 @@ Two files are expected to be uploaded:
 #define ITERATIONS 1024
 
 std::vector<float> JacobiKokkos(
-        const std::vector<float> a,
-        const std::vector<float> b,
+        const std::vector<float>& a,
+        const std::vector<float>& b,
         float accuracy);
 
 #endif  // __JACOBI_KOKKOS_H
@@ -468,8 +468,8 @@ std::vector<float> JacobiKokkos(
 #include "jacobi_kokkos.h"
 
 std::vector<float> JacobiKokkos(
-        const std::vector<float> a,
-        const std::vector<float> b,
+        const std::vector<float>& a,
+        const std::vector<float>& b,
         float accuracy) {
     // Place your implementation here
 }
