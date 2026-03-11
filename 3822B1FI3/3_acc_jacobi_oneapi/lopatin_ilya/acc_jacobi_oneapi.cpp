@@ -3,7 +3,7 @@
 #include <utility>
 
 std::vector<float> JacobiAccONEAPI(
-    const std::vector<float> a, const std::vector<float> b,
+    const std::vector<float>& a, const std::vector<float>& b,
     float accuracy, sycl::device device) {
     const auto n = b.size();
 
