@@ -1,76 +1,93 @@
-#include "jacobi_acc_oneapi.h"
-#include <algorithm>
-#include <buffer.hpp>
-#include <handler.hpp>
-#include <range.hpp>
-#include <reduction.hpp>
-#include <vector>
+#include "acc_jacobi_oneapi.h"
+#include <cmath>
 
-std::vector<float> JacobiAccONEAPI(const std::vector<float> a,
-                                   const std::vector<float> b,
-                                   float accuracy,
-                                   sycl::device device) {
-  int size = b.size();
-  std::vector<float> curr_ans(size, 0.0f);
-  std::vector<float> prev_ans(size, 0.0f);
-  float max_diff = 0.0f;
-  int iteration = 0;
+std::vector<float> JacobiAccONEAPI(const std::vector<float>& a,const std::vector<float>& b,float accuracy,sycl::device device) {
+    const size_t n = static_cast<size_t>(std::sqrt(a.size()));
+    const float accuracy_sq = accuracy * accuracy;
 
-  {
-    sycl::buffer<float> buf_a(a.data(), a.size());
-    sycl::buffer<float> buf_b(b.data(), b.size());
-    sycl::buffer<float> buf_curr(curr_ans.data(), curr_ans.size());
-    sycl::buffer<float> buf_prev(prev_ans.data(), prev_ans.size());
-    sycl::buffer<float> buf_max_diff(&max_diff, 1);
-    sycl::queue queue(device);
-
-    while (iteration++ < ITERATIONS) {
-      queue.submit([&](sycl::handler &cgh) {
-        auto a_access = buf_a.get_access<sycl::access::mode::read>(cgh);
-        auto b_access = buf_b.get_access<sycl::access::mode::read>(cgh);
-        auto prev_access = buf_prev.get_access<sycl::access::mode::read>(cgh);
-        auto curr_access = buf_curr.get_access<sycl::access::mode::write>(cgh);
-        
-        auto reduction = sycl::reduction(buf_max_diff, cgh, sycl::maximum<float>());
-
-        cgh.parallel_for(sycl::range<1>(size), reduction,
-                         [=](sycl::id<1> idx, auto &max_diff_reduction) {
-          int i = idx[0];
-          float sum = b_access[i];
-          
-          for (int j = 0; j < size; ++j) {
-            if (i != j) {
-              sum -= a_access[i * size + j] * prev_access[j];
-            }
-          }
-          
-          float new_value = sum / a_access[i * size + i];
-          curr_access[i] = new_value;
-          
-          float diff = sycl::fabs(new_value - prev_access[i]);
-          max_diff_reduction.combine(diff);
-        });
-      });
-
-      queue.wait();
-
-      float current_max_diff = buf_max_diff.get_host_access()[0];
-      if (current_max_diff < accuracy) {
-        break;
-      }
-
-      queue.submit([&](sycl::handler &cgh) {
-        auto curr_access = buf_curr.get_access<sycl::access::mode::read>(cgh);
-        auto prev_access = buf_prev.get_access<sycl::access::mode::write>(cgh);
-        
-        cgh.parallel_for(sycl::range<1>(size), [=](sycl::id<1> idx) {
-          prev_access[idx] = curr_access[idx];
-        });
-      });
-
-      queue.wait();
+    std::vector<float> inv_diag(n);
+    for (size_t i = 0; i < n; ++i) {
+        inv_diag[i] = 1.0f / a[i * n + i];
     }
-  }
 
-  return curr_ans;
+    sycl::queue q(device, sycl::property::queue::in_order{});
+
+    sycl::buffer<float, 1> A_buf(a.data(), sycl::range<1>(a.size()));
+    sycl::buffer<float, 1> B_buf(b.data(), sycl::range<1>(b.size()));
+    sycl::buffer<float, 1> inv_diag_buf(inv_diag.data(), sycl::range<1>(n));
+
+    sycl::buffer<float, 1> x_curr_buf{sycl::range<1>(n)};
+    sycl::buffer<float, 1> x_next_buf{sycl::range<1>(n)};
+    sycl::buffer<float, 1> norm_buf{sycl::range<1>(1)};
+
+    q.submit([&](sycl::handler& cgh) {
+        auto x_acc = x_curr_buf.get_access<sycl::access::mode::write>(cgh);
+        cgh.fill(x_acc, 0.0f);
+    });
+
+    for (int iter = 0; iter < ITERATIONS; ++iter) {
+
+        q.submit([&](sycl::handler& cgh) {
+            auto A_acc = A_buf.get_access<sycl::access::mode::read>(cgh);
+            auto B_acc = B_buf.get_access<sycl::access::mode::read>(cgh);
+            auto invD_acc = inv_diag_buf.get_access<sycl::access::mode::read>(cgh);
+            auto x_curr_acc = x_curr_buf.get_access<sycl::access::mode::read>(cgh);
+            auto x_next_acc = x_next_buf.get_access<sycl::access::mode::write>(cgh);
+
+            cgh.parallel_for(sycl::range<1>(n), [=](sycl::id<1> idx) {
+                size_t i = idx[0];
+                size_t row_start = i * n;
+
+                float sum = 0.0f;
+
+                #pragma unroll 4
+                for (size_t j = 0; j < n; ++j) {
+                    if (j != i) {
+                        sum += A_acc[row_start + j] * x_curr_acc[j];
+                    }
+                }
+
+                x_next_acc[i] = invD_acc[i] * (B_acc[i] - sum);
+            });
+        });
+
+        q.submit([&](sycl::handler& cgh) {
+            auto norm_acc = norm_buf.get_access<sycl::access::mode::write>(cgh);
+            cgh.fill(norm_acc, 0.0f);
+        });
+
+        q.submit([&](sycl::handler& cgh) {
+            auto x_curr_acc = x_curr_buf.get_access<sycl::access::mode::read>(cgh);
+            auto x_next_acc = x_next_buf.get_access<sycl::access::mode::read>(cgh);
+
+            auto reduction = sycl::reduction(
+                norm_buf,
+                cgh,
+                sycl::plus<float>());
+
+            cgh.parallel_for(
+                sycl::range<1>(n),
+                reduction,
+                [=](sycl::id<1> idx, auto& norm_sum) {
+                    size_t i = idx[0];
+                    float diff = x_next_acc[i] - x_curr_acc[i];
+                    norm_sum += diff * diff;
+                });
+        }).wait();
+
+        float norm_sq = norm_buf.get_host_access()[0];
+        if (norm_sq < accuracy_sq) {
+            break;
+        }
+
+        std::swap(x_curr_buf, x_next_buf);
+    }
+
+    std::vector<float> result(n);
+    q.submit([&](sycl::handler& cgh) {
+        auto x_acc = x_curr_buf.get_access<sycl::access::mode::read>(cgh);
+        cgh.copy(x_acc, result.data());
+    }).wait();
+
+    return result;
 }

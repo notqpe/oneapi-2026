@@ -3,88 +3,85 @@
 #include <algorithm>
 
 std::vector<float> JacobiDevONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
-        float accuracy, sycl::device device) {
+        const std::vector<float>& a,
+        const std::vector<float>& b,
+        float accuracy,
+        sycl::device device) {
     
-    const size_t n = b.size();
+    const int n = static_cast<int>(b.size());
     const float accuracy_sq = accuracy * accuracy;
+    sycl::queue q(device, sycl::property::queue::in_order{});
 
     std::vector<float> inv_diag(n);
-    for (size_t i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) {
         inv_diag[i] = 1.0f / a[i * n + i];
     }
 
-    sycl::queue q(device, {sycl::property::queue::in_order{}});
-
     float* d_a = sycl::malloc_device<float>(n * n, q);
     float* d_b = sycl::malloc_device<float>(n, q);
-    float* d_inv_diag = sycl::malloc_device<float>(n, q);
+    float* d_inv = sycl::malloc_device<float>(n, q);
     float* d_x_curr = sycl::malloc_device<float>(n, q);
     float* d_x_next = sycl::malloc_device<float>(n, q);
-    float* d_norm_sq = sycl::malloc_device<float>(1, q);
 
-    q.memcpy(d_a, a.data(), n * n * sizeof(float));
-    q.memcpy(d_b, b.data(), n * sizeof(float));
-    q.memcpy(d_inv_diag, inv_diag.data(), n * sizeof(float));
-    q.fill(d_x_curr, 0.0f, n).wait();
+    q.memcpy(d_a, a.data(), sizeof(float) * n * n);
+    q.memcpy(d_b, b.data(), sizeof(float) * n);
+    q.memcpy(d_inv, inv_diag.data(), sizeof(float) * n);
+    q.fill(d_x_curr, 0.0f, n);
 
-    size_t wg_size = device.is_gpu() ? 128 : 256;
-    wg_size = std::min(wg_size, device.get_info<sycl::info::device::max_work_group_size>());
-
+    const size_t wg_size = 64;
+    const size_t global_size = ((n + wg_size - 1) / wg_size) * wg_size;
+    
     bool converged = false;
+    const int CHECK_INTERVAL = 8;
+    
+    std::vector<float> x_host(n);
+    std::vector<float> x_prev(n, 0.0f);
+
     for (int iter = 0; iter < ITERATIONS && !converged; iter++) {
-        q.memset(d_norm_sq, 0, sizeof(float));
-
-        sycl::buffer<float, 1> norm_buf(d_norm_sq, sycl::range<1>(1));
-        
-        q.submit([&](sycl::handler& cgh) {
-            auto a_acc = sycl::accessor(d_a, cgh, sycl::read_only);
-            auto b_acc = sycl::accessor(d_b, cgh, sycl::read_only);
-            auto inv_diag_acc = sycl::accessor(d_inv_diag, cgh, sycl::read_only);
-            auto x_curr_acc = sycl::accessor(d_x_curr, cgh, sycl::read_only);
-            auto x_next_acc = sycl::accessor(d_x_next, cgh, sycl::write_only);
-            auto reduction = sycl::reduction(norm_buf, cgh, sycl::plus<float>());
-
-            cgh.parallel_for(sycl::nd_range<1>(
-                sycl::range<1>(((n + wg_size - 1) / wg_size) * wg_size),
-                sycl::range<1>(wg_size)
-            ), reduction, [=](sycl::nd_item<1> item, auto& norm_red) {
-                size_t gid = item.get_global_id(0);
-                if (gid >= n) return;
+        q.parallel_for(sycl::nd_range<1>(global_size, wg_size),
+            [=](sycl::nd_item<1> item) {
+                size_t i = item.get_global_id(0);
+                if (i >= static_cast<size_t>(n)) return;
 
                 float sum = 0.0f;
-                size_t row_start = gid * n;
+                const size_t row_start = i * n;
+
                 #pragma unroll(4)
-                for (size_t j = 0; j < n; j++) {
-                    if (j != gid) {
-                        sum += a_acc[row_start + j] * x_curr_acc[j];
+                for (int j = 0; j < n; j++) {
+                    if (j != static_cast<int>(i)) {
+                        sum += d_a[row_start + j] * d_x_curr[j];
                     }
                 }
-                float x_new = inv_diag_acc[gid] * (b_acc[gid] - sum);
-                x_next_acc[gid] = x_new;
-                float diff = x_new - x_curr_acc[gid];
-                norm_red += diff * diff;
+                d_x_next[i] = d_inv[i] * (d_b[i] - sum);
             });
-        }).wait();
 
-        float norm_host;
-        q.memcpy(&norm_host, d_norm_sq, sizeof(float)).wait();
-        if (norm_host < accuracy_sq) {
-            converged = true;
+        if ((iter + 1) % CHECK_INTERVAL == 0) {
+            q.memcpy(x_host.data(), d_x_next, sizeof(float) * n).wait();
+            
+            float norm_sq = 0.0f;
+            for (int i = 0; i < n; i++) {
+                float diff = x_host[i] - x_prev[i];
+                norm_sq += diff * diff;
+            }
+            
+            if (norm_sq < accuracy_sq) {
+                converged = true;
+                break;
+            }
+            
+            x_prev = x_host;
         }
 
         std::swap(d_x_curr, d_x_next);
     }
 
-    std::vector<float> result(n);
-    q.memcpy(result.data(), d_x_curr, n * sizeof(float)).wait();
+    q.memcpy(x_host.data(), d_x_curr, sizeof(float) * n).wait();
 
     sycl::free(d_a, q);
     sycl::free(d_b, q);
-    sycl::free(d_inv_diag, q);
+    sycl::free(d_inv, q);
     sycl::free(d_x_curr, q);
     sycl::free(d_x_next, q);
-    sycl::free(d_norm_sq, q);
 
-    return result;
+    return x_host; //
 }

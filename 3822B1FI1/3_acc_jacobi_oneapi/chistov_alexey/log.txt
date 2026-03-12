@@ -1,4 +1,0 @@
-/home/crazyproger/sandbox/oneapi-2026/3822B1FI1/3_acc_jacobi_oneapi/chistov_alexey/acc_jacobi_oneapi.cpp:1:10: fatal error: 'jacobi_acc_oneapi.h' file not found
-    1 | #include "jacobi_acc_oneapi.h"
-      |          ^~~~~~~~~~~~~~~~~~~~~
-1 error generated.

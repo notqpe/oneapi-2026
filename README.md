@@ -224,7 +224,7 @@ $|a_{ii}|>\sum_{j \neq i}|a_{ij}|$ for any $i$.
 To complete this task, one should implement the function that computes the solution for the system of linear equations using Jacobi method:
 ```cpp
 std::vector<float> JacobiAccONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device);
 ```
 One should implement both stop methods at the same time. Use $N=1024$ as maximum iterations count and $accuracy$ argument as $Eps$. computations have to be stopped when $|x^{(k+1)}-x^{(k)}|<accuracy$ first, and if it's not happening, when after 1024 iterations.
@@ -244,7 +244,7 @@ Two files are expected to be uploaded:
 #define ITERATIONS 1024
 
 std::vector<float> JacobiAccONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device);
 
 #endif  // __ACC_JACOBI_ONEAPI_H
@@ -254,7 +254,7 @@ std::vector<float> JacobiAccONEAPI(
 #include "acc_jacobi_oneapi.h"
 
 std::vector<float> JacobiAccONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device) {
     // Place your implementation here
 }
@@ -276,7 +276,7 @@ Two files are expected to be uploaded:
 #define ITERATIONS 1024
 
 std::vector<float> JacobiDevONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device);
 
 #endif  // __DEV_JACOBI_ONEAPI_H
@@ -286,7 +286,7 @@ std::vector<float> JacobiDevONEAPI(
 #include "dev_jacobi_oneapi.h"
 
 std::vector<float> JacobiDevONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device) {
     // Place your implementation here
 }
@@ -308,7 +308,7 @@ Two files are expected to be uploaded:
 #define ITERATIONS 1024
 
 std::vector<float> JacobiSharedONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device);
 
 #endif  // __SHARED_JACOBI_ONEAPI_H
@@ -318,7 +318,7 @@ std::vector<float> JacobiSharedONEAPI(
 #include "shared_jacobi_oneapi.h"
 
 std::vector<float> JacobiSharedONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device) {
     // Place your implementation here
 }
@@ -353,7 +353,7 @@ Two files are expected to be uploaded:
 #include <sycl/sycl.hpp>
 
 std::vector<float> GemmBlockONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         size_t size, sycl::device device);
 
 #endif  // __BLOCK_GEMM_ONEAPI_H
@@ -363,7 +363,7 @@ std::vector<float> GemmBlockONEAPI(
 #include "block_gemm_oneapi.h"
 
 std::vector<float> GemmBlockONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         size_t size, sycl::device device) {
     // Place your implementation here
 }
@@ -389,7 +389,7 @@ Two files are expected to be uploaded:
 #include <sycl/sycl.hpp>
 
 std::vector<float> GemmMklONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         size_t size, sycl::device device);
 
 #endif  // __MKL_GEMM_ONEAPI_H
@@ -399,7 +399,7 @@ std::vector<float> GemmMklONEAPI(
 #include "mkl_gemm_oneapi.h"
 
 std::vector<float> GemmMklONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         size_t size, sycl::device device) {
     // Place your implementation here
 }
@@ -457,8 +457,8 @@ Two files are expected to be uploaded:
 #define ITERATIONS 1024
 
 std::vector<float> JacobiKokkos(
-        const std::vector<float> a,
-        const std::vector<float> b,
+        const std::vector<float>& a,
+        const std::vector<float>& b,
         float accuracy);
 
 #endif  // __JACOBI_KOKKOS_H
@@ -468,8 +468,8 @@ std::vector<float> JacobiKokkos(
 #include "jacobi_kokkos.h"
 
 std::vector<float> JacobiKokkos(
-        const std::vector<float> a,
-        const std::vector<float> b,
+        const std::vector<float>& a,
+        const std::vector<float>& b,
         float accuracy) {
     // Place your implementation here
 }
@@ -480,87 +480,139 @@ std::vector<float> JacobiKokkos(
 |Group|Name|Result|Rank|
 |-----|----|------|----|
 |3822B1FI1|chistov_alexey|0.0672|1|
+|3822B1FI1|shulpin_ilya|0.0710|8|
 |3822B1FI1|beskhmelnova_kseniya|0.0844|6|
+|3822B1FI1|rezantseva_anastasia|0.1600|7|
 |3822B1FI1|drozhdinov_dmitriy|0.1613|3|
+|3822B1FI3|kholin_kirill|0.1891|5|
+|3822B1FI3|frolova_elizaveta|0.1951|4|
 |3822B1FI3|lopatin_ilya|0.2017|1|
 |3822B1FI1|kabalova_valeria|0.2107|2|
 |3822B1FI1|solovev_alexey|0.2119|5|
+|3822B1FI3|sozonov_ilya|0.2314|3|
 |3822B1FI1|shurigin_sergey|0.2419|4|
+|3822B1FI3|kolodkin_grigorii|0.2419|2|
 |**REF**|**REF**|**0.2492**|**-**|
-|3822B1FI1|rezantseva_anastasia|0.2582|7|
 
 ## 2_integral_oneapi (65536 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
 |3822B1FI1|chistov_alexey|0.4474|3|
 |**REF**|**REF**|**0.4723**|**-**|
+|3822B1FI1|rezantseva_anastasia|0.5868|5|
+|3822B1FI3|frolova_elizaveta|0.8388|3|
+|3822B1FI1|shurigin_sergey|0.8417|7|
+|3822B1FI3|kolodkin_grigorii|0.8418|2|
 |3822B1FI1|beskhmelnova_kseniya|0.8425|2|
 |3822B1FI1|solovev_alexey|0.8441|4|
 |3822B1FI1|kabalova_valeria|0.8483|1|
 |3822B1FI3|lopatin_ilya|0.9945|1|
+|3822B1FI1|drozhdinov_dmitriy|0.9980|6|
+|3822B1FI1|shulpin_ilya|1.0230|8|
 
 ## 3_acc_jacobi_oneapi (4096 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
 |**REF**|**REF**|**0.2749**|**-**|
+|3822B1FI3|kolodkin_grigorii|0.3235|1|
+|3822B1FI3|frolova_elizaveta|0.3264|2|
+|3822B1FI1|shurigin_sergey|0.3290|4|
+|3822B1FI1|solovev_alexey|0.3380|5|
 |3822B1FI1|beskhmelnova_kseniya|0.3462|1|
-|3822B1FI1|chistov_alexey|BUILD FAILED|-|
-|3822B1FI3|lopatin_ilya|BUILD FAILED|-|
+|3822B1FI3|lopatin_ilya|0.3551|3|
+|3822B1FI1|chistov_alexey|0.3639|3|
+|3822B1FI1|drozhdinov_dmitriy|0.5052|2|
 
 ## 4_dev_jacobi_oneapi (4096 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
 |**REF**|**REF**|**0.2701**|**-**|
-|3822B1FI1|beskhmelnova_kseniya|BUILD FAILED|-|
-|3822B1FI3|lopatin_ilya|BUILD FAILED|-|
+|3822B1FI1|solovev_alexey|0.2909|3|
+|3822B1FI1|shurigin_sergey|0.2945|5|
+|3822B1FI3|lopatin_ilya|0.3083|3|
+|3822B1FI3|kolodkin_grigorii|0.3165|1|
+|3822B1FI1|drozhdinov_dmitriy|0.3362|4|
+|3822B1FI3|frolova_elizaveta|0.4842|2|
+|3822B1FI1|beskhmelnova_kseniya|0.5692|1|
+|3822B1FI1|chistov_alexey|0.6086|2|
 
 ## 5_shared_jacobi_oneapi (4096 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
+|3822B1FI1|chistov_alexey|0.1641|1|
 |**REF**|**REF**|**0.2633**|**-**|
+|3822B1FI1|shurigin_sergey|0.2827|5|
+|3822B1FI1|drozhdinov_dmitriy|0.3305|4|
+|3822B1FI1|solovev_alexey|0.3317|3|
+|3822B1FI1|beskhmelnova_kseniya|0.3483|2|
+|3822B1FI3|kolodkin_grigorii|0.4017|1|
+|3822B1FI3|frolova_elizaveta|0.4647|2|
 
 ## 6_block_gemm_oneapi (3072 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
+|3822B1FI3|frolova_elizaveta|0.8798|2|
+|3822B1FI1|beskhmelnova_kseniya|0.8884|1|
+|3822B1FI1|solovev_alexey|0.8935|3|
+|3822B1FI1|shurigin_sergey|0.9134|4|
 |**REF**|**REF**|**0.9144**|**-**|
+|3822B1FI1|chistov_alexey|0.9184|2|
+|3822B1FI3|kolodkin_grigorii|2.1427|1|
 
 ## 7_mkl_gemm_oneapi (3072 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
+|3822B1FI1|beskhmelnova_kseniya|0.4091|2|
+|3822B1FI1|solovev_alexey|0.4340|3|
+|3822B1FI1|chistov_alexey|0.4392|1|
 |**REF**|**REF**|**0.4392**|**-**|
+|3822B1FI3|kolodkin_grigorii|0.4450|1|
+|3822B1FI3|frolova_elizaveta|0.4468|2|
 
 ## 8_integral_kokkos (65536 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
+|3822B1FI1|solovev_alexey|0.0006|3|
+|3822B1FI1|chistov_alexey|0.0009|1|
+|3822B1FI1|beskhmelnova_kseniya|0.0011|2|
 |**REF**|**REF**|**0.3629**|**-**|
+|3822B1FI3|kolodkin_grigorii|2.3206|1|
 
 ## 9_jacobi_kokkos (4096 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
 |**REF**|**REF**|**0.2679**|**-**|
+|3822B1FI1|chistov_alexey|0.3202|2|
+|3822B1FI1|beskhmelnova_kseniya|0.3214|1|
+|3822B1FI3|kolodkin_grigorii|0.3787|1|
 
 # Tasks Done
 ## 3822B1FI1
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI1|beskhmelnova_kseniya|3/9|184|
-|3822B1FI1|chistov_alexey|2/9|126|
-|3822B1FI1|drozhdinov_dmitriy|1/9|60|
-|3822B1FI1|kabalova_valeria|2/9|121|
-|3822B1FI1|rezantseva_anastasia|1/9|52|
-|3822B1FI1|shurigin_sergey|1/9|56|
-|3822B1FI1|solovev_alexey|2/9|115|
+|3822B1FI1|beskhmelnova_kseniya|**9/9**|**550**|
+|3822B1FI1|chistov_alexey|**9/9**|**556**|
+|3822B1FI1|drozhdinov_dmitriy|5/9|288|
+|3822B1FI1|kabalova_valeria|2/9|117|
+|3822B1FI1|rezantseva_anastasia|2/9|114|
+|3822B1FI1|shulpin_ilya|2/9|106|
+|3822B1FI1|shurigin_sergey|6/9|348|
+|3822B1FI1|solovev_alexey|8/9|475|
 
-Passed: 0
+Passed: 2
 
 ## 3822B1FI3
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI3|lopatin_ilya|2/9|128|
+|3822B1FI3|frolova_elizaveta|7/9|432|
+|3822B1FI3|kholin_kirill|1/9|60|
+|3822B1FI3|kolodkin_grigorii|**9/9**|**567**|
+|3822B1FI3|lopatin_ilya|4/9|246|
+|3822B1FI3|sozonov_ilya|1/9|59|
 
-Passed: 0
+Passed: 1
 
-**Total Passed: 0**
+**Total Passed: 3**
 
 ---
 *Maximum Score: 576 (64 per task)*
