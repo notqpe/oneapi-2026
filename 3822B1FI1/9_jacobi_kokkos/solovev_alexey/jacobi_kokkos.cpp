@@ -51,7 +51,7 @@ std::vector<float> JacobiKokkos(
         Kokkos::parallel_reduce(
             Kokkos::RangePolicy<>(0, n),
             KOKKOS_LAMBDA(const int i, float& local_max) {
-                float diff = fabsf(x_new(i) - x(i));
+                float diff = Kokkos::fabs(x_new(i) - x(i));
                 if (diff > local_max) local_max = diff;
             },
             Kokkos::Max<float>(max_diff)
@@ -60,7 +60,7 @@ std::vector<float> JacobiKokkos(
         if (max_diff < accuracy)
             break;
 
-        Kokkos::deep_copy(x, x_new);
+        Kokkos::kokkos_swap(x, x_new);
     }
 
     auto host_x = Kokkos::create_mirror_view(x);
