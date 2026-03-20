@@ -1,5 +1,11 @@
-/usr/bin/ld: /tmp/icpx-35e63b7198/main-162725.o: in function `Run(int)':
-main.cpp:(.text+0x2d0): undefined reference to `JacobiKokkos(std::vector<float, std::allocator<float> > const&, std::vector<float, std::allocator<float> > const&, float)'
-/usr/bin/ld: /tmp/icpx-35e63b7198/main-162725.o: in function `main':
-main.cpp:(.text+0xb27): undefined reference to `JacobiKokkos(std::vector<float, std::allocator<float> > const&, std::vector<float, std::allocator<float> > const&, float)'
-icpx: error: linker command failed with exit code 1 (use -v to see invocation)
+Kokkos::OpenMP::initialize WARNING: OMP_PROC_BIND environment variable not set
+  In general, for best performance with OpenMP 4.0 or better set OMP_PROC_BIND=spread and OMP_PLACES=threads
+  For best performance with OpenMP 3.1 set OMP_PROC_BIND=true
+  For unit testing set OMP_PROC_BIND=false
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Error: Kokkos::deep_copy with no available copy mechanism: from source view ("") to destination view ("A").
+There is no common execution space that can access both source's space
+(Host) and destination's space (SYCLDeviceUSM), so source and destination
+must be contiguous and have the same layout.
+
