@@ -1,0 +1,50 @@
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI2/4_dev_jacobi_oneapi/guseynov_emil/dev_jacobi_oneapi.cpp:45:30: error: no matching function for call to 'reduction'
+   45 |             auto reduction = sycl::reduction(d_diff, h, 0.0f, sycl::maximum<float>());
+      |                              ^~~~~~~~~~~~~~~
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/reduction.hpp:2880:6: note: candidate template ignored: deduced conflicting types for parameter 'T' ('float' vs. 'sycl::handler')
+ 2880 | auto reduction(T *Var, const T &Identity, BinaryOperation Combiner,
+      |      ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/ext/oneapi/experimental/reduction_properties.hpp:164:6: note: candidate template ignored: deduced conflicting types for parameter 'T' ('float' vs. 'sycl::handler')
+  164 | auto reduction(T *var, const T &identity, BinaryOperation combiner,
+      |      ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/reduction.hpp:2837:6: note: candidate template ignored: could not match 'buffer<T, 1, AllocatorT>' against 'float *'
+ 2837 | auto reduction(buffer<T, 1, AllocatorT> Var, handler &CGH,
+      |      ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/reduction.hpp:2866:6: note: candidate template ignored: could not match 'buffer<T, 1, AllocatorT>' against 'float *'
+ 2866 | auto reduction(buffer<T, 1, AllocatorT> Var, handler &CGH, const T &Identity,
+      |      ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/reduction.hpp:2910:6: note: candidate template ignored: could not match 'span<T, Extent>' against 'float *'
+ 2910 | auto reduction(span<T, Extent> Span, const T &Identity,
+      |      ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/ext/oneapi/experimental/reduction_properties.hpp:122:6: note: candidate template ignored: requirement 'detail::is_valid_reduction_prop_list<sycl::maximum<float>>' was not satisfied [with BufferT = float *, BinaryOperation = float, PropertyList = sycl::maximum<float>]
+  122 | auto reduction(BufferT vars, handler &cgh, BinaryOperation combiner,
+      |      ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/ext/oneapi/experimental/reduction_properties.hpp:175:6: note: candidate template ignored: could not match 'span<T, Extent>' against 'float *'
+  175 | auto reduction(span<T, Extent> vars, const T &identity,
+      |      ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/reduction.hpp:2853:6: note: candidate function template not viable: requires at most 3 arguments, but 4 were provided
+ 2853 | auto reduction(T *Var, BinaryOperation Combiner,
+      |      ^         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2854 |                const property_list &PropList = {}) {
+      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/reduction.hpp:2896:6: note: candidate function template not viable: requires at most 3 arguments, but 4 were provided
+ 2896 | auto reduction(span<T, Extent> Span, BinaryOperation Combiner,
+      |      ^         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2897 |                const property_list &PropList = {}) {
+      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/ext/oneapi/experimental/reduction_properties.hpp:133:6: note: candidate function template not viable: requires 3 arguments, but 4 were provided
+  133 | auto reduction(T *var, BinaryOperation combiner, PropertyList properties)
+      |      ^         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/ext/oneapi/experimental/reduction_properties.hpp:143:6: note: candidate function template not viable: requires 3 arguments, but 4 were provided
+  143 | auto reduction(span<T, Extent> vars, BinaryOperation combiner,
+      |      ^         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  144 |                PropertyList properties)
+      |                ~~~~~~~~~~~~~~~~~~~~~~~
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/ext/oneapi/experimental/reduction_properties.hpp:153:6: note: candidate function template not viable: requires 5 arguments, but 4 were provided
+  153 | auto reduction(BufferT vars, handler &cgh,
+      |      ^         ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  154 |                const typename BufferT::value_type &identity,
+      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  155 |                BinaryOperation combiner, PropertyList properties)
+      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
