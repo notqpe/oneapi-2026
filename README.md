@@ -509,6 +509,7 @@ std::vector<float> JacobiKokkos(
 ## 2_integral_oneapi (65536 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
+|3822B1FI3|sozonov_ilya|0.0008|9|
 |3822B1FI1|chistov_alexey|0.4474|3|
 |**REF**|**REF**|**0.4723**|**-**|
 |3822B1FI1|rezantseva_anastasia|0.5868|5|
@@ -739,15 +740,15 @@ Passed: 3
 ## 3822B1FI3
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI3|chizhov_maxim|**9/9**|**491**|
-|3822B1FI3|ekaterina_kozlova|**9/9**|**515**|
-|3822B1FI3|frolova_elizaveta|**9/9**|**532**|
-|3822B1FI3|kholin_kirill|**9/9**|**513**|
-|3822B1FI3|kolodkin_grigorii|**9/9**|**538**|
-|3822B1FI3|kudryashova_irina|3/9|169|
-|3822B1FI3|lopatin_ilya|**9/9**|**541**|
-|3822B1FI3|lysov_ivan|7/9|393|
-|3822B1FI3|sozonov_ilya|1/9|56|
+|3822B1FI3|chizhov_maxim|**9/9**|**490**|
+|3822B1FI3|ekaterina_kozlova|**9/9**|**514**|
+|3822B1FI3|frolova_elizaveta|**9/9**|**531**|
+|3822B1FI3|kholin_kirill|**9/9**|**512**|
+|3822B1FI3|kolodkin_grigorii|**9/9**|**537**|
+|3822B1FI3|kudryashova_irina|3/9|168|
+|3822B1FI3|lopatin_ilya|**9/9**|**540**|
+|3822B1FI3|lysov_ivan|7/9|392|
+|3822B1FI3|sozonov_ilya|2/9|112|
 
 Passed: 6
 
