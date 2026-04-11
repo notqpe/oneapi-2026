@@ -559,6 +559,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|rezantseva_anastasia|0.3366|6|
 |3822B1FI1|solovev_alexey|0.3380|5|
 |3822B1FI1|beskhmelnova_kseniya|0.3462|1|
+|3822B1FI3|sozonov_ilya|0.3498|9|
 |3822B1FI3|lopatin_ilya|0.3551|3|
 |3822B1FI1|chistov_alexey|0.3639|3|
 |3822B1FI2|yasakova_tanya|0.3980|2|
@@ -566,7 +567,6 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|drozhdinov_dmitriy|0.5052|2|
 |3822B1FI1|mironov_arseniy|TEST FAILED|-|
 |3822B1FI1|kurakin_matvey|TEST FAILED|-|
-|3822B1FI3|sozonov_ilya|TEST FAILED|-|
 |3822B1FI2|guseynov_emil|TOO SLOW|-|
 
 ## 4_dev_jacobi_oneapi (4096 elements)
@@ -730,6 +730,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|drozhdinov_dmitriy|**9/9**|**486**|
 |3822B1FI1|grudzin_konstantin|3/9|151|
 |3822B1FI1|ionova_ekaterina|**9/9**|**473**|
+|3822B1FI1|ivanov_mikhail|0/9|0|
 |3822B1FI1|kabalova_valeria|2/9|114|
 |3822B1FI1|kurakin_matvey|8/9|401|
 |3822B1FI1|mironov_arseniy|4/9|199|
@@ -760,9 +761,9 @@ Passed: 3
 |3822B1FI3|kholin_kirill|**9/9**|**510**|
 |3822B1FI3|kolodkin_grigorii|**9/9**|**535**|
 |3822B1FI3|kudryashova_irina|5/9|281|
-|3822B1FI3|lopatin_ilya|**9/9**|**538**|
+|3822B1FI3|lopatin_ilya|**9/9**|**537**|
 |3822B1FI3|lysov_ivan|7/9|390|
-|3822B1FI3|sozonov_ilya|2/9|112|
+|3822B1FI3|sozonov_ilya|3/9|161|
 
 Passed: 6
 
