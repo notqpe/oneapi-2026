@@ -7,6 +7,7 @@ std::vector<float> JacobiAccONEAPI(const std::vector<float> &a,
                                    sycl::device device) {
 
   const size_t n = static_cast<size_t>(std::sqrt(a.size()));
+  const float accuracy_sq = accuracy * accuracy;
 
   std::vector<float> inv_diag(n);
   for (size_t i = 0; i < n; ++i) {
@@ -21,7 +22,7 @@ std::vector<float> JacobiAccONEAPI(const std::vector<float> &a,
 
   sycl::buffer<float, 1> x_curr_buf{n};
   sycl::buffer<float, 1> x_next_buf{n};
-  sycl::buffer<float, 1> max_diff_buf{1};
+  sycl::buffer<float, 1> norm_buf{1};
 
   q.submit([&](sycl::handler &cgh) {
     auto x_acc = x_curr_buf.get_access<sycl::access::mode::discard_write>(cgh);
@@ -51,25 +52,23 @@ std::vector<float> JacobiAccONEAPI(const std::vector<float> &a,
     });
 
     q.submit([&](sycl::handler &cgh) {
-      auto max_acc =
-          max_diff_buf.get_access<sycl::access::mode::discard_write>(cgh);
-      cgh.single_task([=]() { max_acc[0] = 0.0f; });
+      auto norm_acc =
+          norm_buf.get_access<sycl::access::mode::discard_write>(cgh);
+      cgh.single_task([=]() { norm_acc[0] = 0.0f; });
     });
 
     q.submit([&](sycl::handler &cgh) {
        auto x_curr_acc = x_curr_buf.get_access<sycl::access::mode::read>(cgh);
        auto x_next_acc = x_next_buf.get_access<sycl::access::mode::read>(cgh);
-       auto reduction =
-           sycl::reduction(max_diff_buf, cgh, sycl::maximum<float>());
+       auto reduction = sycl::reduction(norm_buf, cgh, sycl::plus<float>());
        cgh.parallel_for(sycl::range<1>(n), reduction,
                         [=](sycl::id<1> idx, auto &reducer) {
-                          const size_t i = idx[0];
-                          float diff = std::fabs(x_next_acc[i] - x_curr_acc[i]);
-                          reducer.combine(diff);
+                          float diff = x_next_acc[idx] - x_curr_acc[idx];
+                          reducer += diff * diff;
                         });
      }).wait();
 
-    if (max_diff_buf.get_host_access()[0] < accuracy) {
+    if (norm_buf.get_host_access()[0] < accuracy_sq) {
       break;
     }
 
