@@ -489,6 +489,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|grudzin_konstantin|0.1183|11|
 |3822B1FI2|vyunov_danila|0.1202|8|
 |3822B1FI2|vyunova_ekaterina|0.1272|7|
+|3822B1FI2|dormidontov_egor|0.1420|9|
 |3822B1FI1|ivanov_mikhail|0.1468|14|
 |3822B1FI2|plekhanov_daniil|0.1499|6|
 |3822B1FI2|khokhlov_andrey|0.1532|4|
@@ -529,6 +530,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI2|yasakova_tanya|0.8381|2|
 |3822B1FI3|frolova_elizaveta|0.8388|3|
 |3822B1FI2|plekhanov_daniil|0.8393|5|
+|3822B1FI2|dormidontov_egor|0.8407|8|
 |3822B1FI1|shurigin_sergey|0.8417|7|
 |3822B1FI3|kolodkin_grigorii|0.8418|2|
 |3822B1FI1|beskhmelnova_kseniya|0.8425|2|
@@ -559,6 +561,7 @@ std::vector<float> JacobiKokkos(
 |-----|----|------|----|
 |3822B1FI1|mironov_arseniy|0.2237|11|
 |3822B1FI1|grudzin_konstantin|0.2468|9|
+|3822B1FI2|dormidontov_egor|0.2559|7|
 |3822B1FI3|ekaterina_kozlova|0.2627|7|
 |3822B1FI2|khokhlov_andrey|0.2654|3|
 |3822B1FI3|kudryashova_irina|0.2669|8|
@@ -619,6 +622,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI2|yasakova_tanya|0.3389|2|
 |3822B1FI3|chizhov_maxim|0.3665|7|
 |3822B1FI1|kurakin_matvey|0.3938|10|
+|3822B1FI2|dormidontov_egor|0.4657|5|
 |3822B1FI2|khokhlov_andrey|0.4715|3|
 |3822B1FI3|frolova_elizaveta|0.4842|2|
 |3822B1FI1|beskhmelnova_kseniya|0.5692|1|
@@ -638,6 +642,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|ionova_ekaterina|0.2024|8|
 |3822B1FI1|ivanov_mikhail|0.2098|11|
 |3822B1FI3|shmidt_olga|0.2202|11|
+|3822B1FI2|dormidontov_egor|0.2231|7|
 |3822B1FI1|shulpin_ilya|0.2351|7|
 |3822B1FI2|bessonov_egor|0.2362|1|
 |3822B1FI1|mironov_arseniy|0.2412|9|
@@ -831,14 +836,15 @@ Passed: 11
 ## 3822B1FI2
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI2|bessonov_egor|**9/9**|**542**|
-|3822B1FI2|guseynov_emil|7/9|411|
-|3822B1FI2|khokhlov_andrey|**9/9**|**539**|
-|3822B1FI2|plekhanov_daniil|**9/9**|**520**|
-|3822B1FI2|sdobnov_vladimir|2/9|112|
-|3822B1FI2|vyunov_danila|6/9|328|
-|3822B1FI2|vyunova_ekaterina|7/9|396|
-|3822B1FI2|yasakova_tanya|**9/9**|**538**|
+|3822B1FI2|bessonov_egor|**9/9**|**538**|
+|3822B1FI2|dormidontov_egor|5/9|282|
+|3822B1FI2|guseynov_emil|7/9|408|
+|3822B1FI2|khokhlov_andrey|**9/9**|**534**|
+|3822B1FI2|plekhanov_daniil|**9/9**|**517**|
+|3822B1FI2|sdobnov_vladimir|2/9|110|
+|3822B1FI2|vyunov_danila|6/9|326|
+|3822B1FI2|vyunova_ekaterina|7/9|394|
+|3822B1FI2|yasakova_tanya|**9/9**|**535**|
 
 Passed: 4
 
